@@ -2,6 +2,7 @@ class Game
   attr_accessor :deck, :box, :player, :dealer
 
   BET = 10
+  MIN_CARD_OF_DECK = 14 # 1/3 deck
 
   def initialize(gamer_name)
     @player = Player.new(gamer_name)
@@ -14,11 +15,21 @@ class Game
   end
 
   def make_a_bet
+    remain_cards
     player.bank -= BET
     dealer.bank -= BET
     box.bank = 2 * BET
     2.times { take_card(player) }
     2.times { take_card(dealer) }
+  end
+
+  def remain_cards
+    #puts"There are still cards left in the deck: #{deck.cards.size}"
+    if deck.cards.size < MIN_CARD_OF_DECK 
+      puts "There are less than 1/3 cards left in the deck"
+      puts "A new deck of cards will be opened"
+       @deck = Deck.new 
+    end
   end
 
   def take_card(gamer)
@@ -33,7 +44,6 @@ class Game
   end 
 
   def game_over?
-    #конец игры, если дилер или игрок набрали по 3 карты
     player.cards.size == 3 || dealer.cards.size == 3
   end
 
