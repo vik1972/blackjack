@@ -28,7 +28,7 @@ class Game
     if deck.cards.size < MIN_CARD_OF_DECK 
       puts "There are less than 1/3 cards left in the deck"
       puts "A new deck of cards will be opened"
-       @deck = Deck.new 
+      @deck = Deck.new 
     end
   end
 
@@ -42,10 +42,6 @@ class Game
   def add_card_dealer
     take_card(dealer) if dealer.score < 17
   end 
-
-  def game_over?
-    player.cards.size == 3 || dealer.cards.size == 3
-  end
 
   def open_cards(*args)
     if args[0].nil?
