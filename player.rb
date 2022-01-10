@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Player < Gamer
   attr_accessor :name, :bank
 

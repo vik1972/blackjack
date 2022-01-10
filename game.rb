@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Game
   attr_accessor :deck, :box, :player, :dealer
 
@@ -15,46 +17,30 @@ class Game
   end
 
   def make_a_bet
-    remain_cards
+    new_deck = remain_cards
     player.bank -= BET
     dealer.bank -= BET
     box.bank = 2 * BET
     2.times { take_card(player) }
     2.times { take_card(dealer) }
+    new_deck
   end
 
   def remain_cards
-    #puts"There are still cards left in the deck: #{deck.cards.size}"
-    if deck.cards.size < MIN_CARD_OF_DECK 
-      puts "There are less than 1/3 cards left in the deck"
-      puts "A new deck of cards will be opened"
-      @deck = Deck.new 
+    if deck.cards.size < MIN_CARD_OF_DECK
+      @deck = Deck.new
+      true
     end
   end
 
   def take_card(gamer)
     return if deck.cards.empty?
-    if gamer.cards.size < 3
-      gamer.cards <<  deck.cards.pop 
-    end
+
+    gamer.cards << deck.cards.pop if gamer.cards.size < 3
   end
 
   def add_card_dealer
     take_card(dealer) if dealer.score < 17
-  end 
-
-  def open_cards(*args)
-    if args[0].nil?
-      puts "Cards of dealer: #{" * " * dealer.cards.size} "
-      puts "Number of points: * "
-    else
-      puts "Cards of dealer:"
-      dealer.cards.each { |card| print "#{card.rank}#{card.suit}  "}
-      puts "\nNumber of points: #{dealer.score}"
-    end
-    puts "Cards of gamer:"
-    player.cards.each { |card| print "#{card.rank}#{card.suit}  "}
-    puts "\nNumber of points: #{player.score}"
   end
 
   def define_winner
@@ -62,6 +48,7 @@ class Game
     return if player.score > 21 && dealer.score > 21
     return player if dealer.score > 21
     return dealer if player.score > 21
+
     player.score > dealer.score ? player : dealer
   end
 
@@ -74,17 +61,7 @@ class Game
       dealer.bank += box.bank / 2
     end
     box.bank = 0
-    play_list(winner)
-  end
-
-  def play_list(winner=nil)
-    if winner
-      puts "Winner #{winner.name.capitalize}" 
-    else
-      puts "The game is a draw" 
-    end
-    puts "Dealer's amount of money: #{dealer.bank}"
-    puts "#{player.name.capitalize}'s amount of money: #{player.bank}" 
+    winner
   end
 
   def set_initial_values
